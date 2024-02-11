@@ -1,9 +1,9 @@
 select * from artist; 			# row count -- 421
-select * from canvas_size;  	# row count -- 200
+select * from canvas_size;  		# row count -- 200
 select * from image_link; 		# row count -- 14775
 select * from museum; 			# row count-- 57
-select * from museum_hours; 	# row count-- 351
-select * from product_size; 	# row count-- 110347
+select * from museum_hours; 		# row count-- 351
+select * from product_size; 		# row count-- 110347
 select * from subject; 			# row count-- 6771
 select * from work; 			# row count-- 14776
 
@@ -14,12 +14,13 @@ select * from work; 			# row count-- 14776
 # Q2. Are there museuems without any paintings?
 #Ans:-
 	select * from museum as m where not exists (select * from work as w where w.museum_id = m.museum_id); # no as such museum
-    select * from museum as m join work as w on w.museum_id = m.museum_id;
+    	
+	select * from museum as m join work as w on w.museum_id = m.museum_id;
 
 # Q3. Identify the museums which are open on both Sunday and Monday. Display museum name, city ?
 #Ans:-
 	select distinct m.name as museum_name, m.city, m.state,m.country from museum_hours as mh 
-    join museum as m on m.museum_id=mh.museum_id where day='Sunday'
+    	join museum as m on m.museum_id=mh.museum_id where day='Sunday'
 	and exists (select * from museum_hours mh2 where mh2.museum_id=mh.museum_id and mh2.day='Monday');
 
 # Q4. Which museum is open for the longest during a day. Dispay museum name, state and hours open and which day?
@@ -42,6 +43,7 @@ select * from work; 			# row count-- 14776
 	
     select country, count(country) from museum group by country order by count(country) desc;
     select city, count(city) from museum group by city order by count(city) desc;
+
 #Ans:-
     with museum_country as 
     (select country, count(country), rank() over(order by count(country) desc) as country_ranking from museum group by country),
@@ -66,8 +68,10 @@ select * from work; 			# row count-- 14776
     where c.size_id=p.size_id ;
     
     # Specific Answer:-
-    select p.work_id, p.size_id, p.sale_price, p.regular_price, c.label, c.width, c.height, p.ranking from (
-    select *, rank() over(order by sale_price desc) as ranking from product_size) as p
+    select p.work_id, p.size_id, p.sale_price, p.regular_price, c.label, c.width, c.height, p.ranking 
+    from (
+    select *, rank() over(order by sale_price desc) as ranking from product_size
+	    ) as p
     join canvas_size as c on c.size_id = p.size_id
     where p.ranking = 1;
     
@@ -90,14 +94,18 @@ select * from work; 			# row count-- 14776
 # Q11. How many museums are open every single day?
 #Ans:-
 
-	select count(*) as museumOpenEveryDay from (select museum_id, count(*) from museum_hours
-	group by museum_id having count(*) = 7) x ;
+	select count(*) as museumOpenEveryDay 
+	from (
+	select museum_id, count(*) from museum_hours group by museum_id having count(*) = 7
+		) x ;
 
 # Q12. Which are the top 5 most popular museum? (Popularity is defined based on most no of paintings in a museum)
 #Ans:-
 
-	select m.name as museum, m.city, m.country, x.no_of_painintgs from (	
-    select m.museum_id, count(*) as no_of_painintgs, rank() over(order by count(*) desc) as ranking_of_museum
+	select m.name as museum, m.city, m.country, x.no_of_painintgs 
+	from (	
+    	select m.museum_id, count(*) as no_of_painintgs, rank() over(order by count(*) desc
+		) as ranking_of_museum
 	from work w
 	join museum m on m.museum_id=w.museum_id group by m.museum_id) x
 	join museum m on m.museum_id=x.museum_id
@@ -107,9 +115,11 @@ select * from work; 			# row count-- 14776
 #Q13. Who are the top 5 most popular artist? (Popularity is defined based on most no of paintings done by an artist)
 #Ans:-
 
-	select a.full_name as artist, a.nationality, x.no_of_painintgs from (	
-    select a.artist_id, count(*) as no_of_painintgs, rank() over(order by count(*) desc) as ranking_of_artist 
-    from work w
+	select a.full_name as artist, a.nationality, x.no_of_painintgs 
+	from (	
+    	select a.artist_id, count(*) as no_of_painintgs, rank() over(order by count(*) desc
+		) as ranking_of_artist 
+    	from work w
 	join artist a on a.artist_id=w.artist_id group by a.artist_id) x
 	join artist a on a.artist_id=x.artist_id
 	where x.ranking_of_artist <= 5;
@@ -118,8 +128,10 @@ select * from work; 			# row count-- 14776
 #Q14. Display the 3 least popular canva sizes
 #Ans:-
 
-	select label, ranking_of_canva, no_of_paintings from (
-    select cs.size_id, cs.label, count(*) as no_of_paintings, dense_rank() over(order by count(*) ) as ranking_of_canva
+	select label, ranking_of_canva, no_of_paintings 
+	from (
+    	select cs.size_id, cs.label, count(*) as no_of_paintings, dense_rank() over(order by count(*) 
+		) as ranking_of_canva
 	from work w
 	join product_size ps on ps.work_id=w.work_id
 	join canvas_size cs on cs.size_id = ps.size_id
