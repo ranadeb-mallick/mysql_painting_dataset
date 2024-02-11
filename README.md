@@ -6,3 +6,7 @@ https://www.kaggle.com/datasets/mexwell/famous-paintings
 
 The aim of this SQL project is to solve a dataset to analyze data and then practice basic to intermediate SQL problems.
 
+# artist_name	nationality	no_of_paintings
+'Jan Willem Pieneman'	'Dutch'	'14'
+'Vincent Van Gogh'	'Dutch'	'14'
+
