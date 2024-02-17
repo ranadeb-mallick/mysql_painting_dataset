@@ -1,4 +1,4 @@
-Here the dataset I use is the famous paintings dataset taken from Kaggle. I use a simple Python script to upload data from CSV files to MySQL Workbench database tables. 
+Here I use is the famous paintings dataset which is taken from Kaggle. First I make a Python script to upload data from CSV files to MySQL Workbench database tables. 
 Then I answer 20 questions related to the famous paintings dataset using SQL queries. 
 
 # Painting dataset link:
